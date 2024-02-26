@@ -37,7 +37,7 @@ import AuthLayout from './_auth/AuthLayout'
 // ])
 function App() {
     return (
-        <>
+        <main className='flex min-h-screen'>
             <Routes>
                 {/* private */}
                 <Route element={<RootLayout />}>
@@ -49,7 +49,7 @@ function App() {
                     <Route path='/register' element={<RegisterForm />} />
                 </Route>
             </Routes>
-        </>
+        </main>
     )
 }
 
