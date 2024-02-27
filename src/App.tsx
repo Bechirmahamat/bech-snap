@@ -9,6 +9,9 @@ import RegisterForm from './_auth/forms/RegisterForm'
 import Error from './_root/Error'
 import { Home, RootLayout } from './_root/pages'
 import AuthLayout from './_auth/AuthLayout'
+import { useToast } from '@/components/ui/use-toast'
+import { Toaster } from './components/ui/toaster'
+
 // const router = createBrowserRouter([
 //     {
 //         path: '/',
@@ -49,6 +52,8 @@ function App() {
                     <Route path='/register' element={<RegisterForm />} />
                 </Route>
             </Routes>
+
+            <Toaster />
         </main>
     )
 }

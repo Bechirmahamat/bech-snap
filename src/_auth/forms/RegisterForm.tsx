@@ -5,7 +5,6 @@ import { z } from 'zod'
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -15,10 +14,20 @@ import { Input } from '@/components/ui/input'
 import { RegisterValidation } from '@/lib/validation'
 import Loader from '@/components/ui/shared/loader'
 import { Link } from 'react-router-dom'
+import { createUserAccount } from '@/lib/appwrite/api'
+import {
+    useCreateUserAccountMutation,
+    useSignInAccountMutation,
+} from '@/lib/react-query/queriesAndMutation'
+import { useToast } from '@/components/ui/use-toast'
 
 const RegisterForm = () => {
-    const isLoading = false
-    // 1. Define your form.
+    const { toast } = useToast()
+    const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } =
+        useCreateUserAccountMutation()
+    const { mutateAsync: signInAccount, isLoading: isSignIn } =
+        useSignInAccountMutation()
+
     const form = useForm<z.infer<typeof RegisterValidation>>({
         resolver: zodResolver(RegisterValidation),
         defaultValues: {
@@ -30,10 +39,21 @@ const RegisterForm = () => {
     })
 
     // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof RegisterValidation>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof RegisterValidation>) {
+        const newUser = await createUserAccount(values)
+        if (!newUser) {
+            return toast({
+                title: 'Sign up failed. Please try again.',
+                description: 'Friday, February 10, 2023 at 5:57 PM',
+            })
+        }
+        const session = await signInAccount({
+            email: values.email,
+            password: values.password,
+        })
+        if (!session) {
+            return toast({ title: 'sign in failed please try agian later' })
+        }
     }
     return (
         <Form {...form}>
@@ -119,7 +139,7 @@ const RegisterForm = () => {
                         )}
                     />
                     <Button type='submit' className='shad-button_primary'>
-                        {isLoading ? (
+                        {isCreatingAccount ? (
                             <div className='flex flex-center gap-2'>
                                 <Loader />
                                 loading...
