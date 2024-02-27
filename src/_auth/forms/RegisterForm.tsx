@@ -13,19 +13,22 @@ import {
 import { Input } from '@/components/ui/input'
 import { RegisterValidation } from '@/lib/validation'
 import Loader from '@/components/ui/shared/loader'
-import { Link } from 'react-router-dom'
-import { createUserAccount } from '@/lib/appwrite/api'
+import { Link, useNavigate } from 'react-router-dom'
+// import { createUserAccount } from '@/lib/appwrite/api'
 import {
     useCreateUserAccountMutation,
     useSignInAccountMutation,
 } from '@/lib/react-query/queriesAndMutation'
 import { useToast } from '@/components/ui/use-toast'
+import { useUserContext } from '@/context/AuthContext'
 
 const RegisterForm = () => {
+    const navigate = useNavigate()
     const { toast } = useToast()
-    const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } =
+    const { checkAuthUser, isLoading: isUserLoading } = useUserContext()
+    const { mutateAsync: createUserAccount, isPending: isCreatingAccount } =
         useCreateUserAccountMutation()
-    const { mutateAsync: signInAccount, isLoading: isSignIn } =
+    const { mutateAsync: signInAccount, isPending: isSignIn } =
         useSignInAccountMutation()
 
     const form = useForm<z.infer<typeof RegisterValidation>>({
@@ -42,17 +45,25 @@ const RegisterForm = () => {
     async function onSubmit(values: z.infer<typeof RegisterValidation>) {
         const newUser = await createUserAccount(values)
         if (!newUser) {
-            return toast({
+            toast({
                 title: 'Sign up failed. Please try again.',
-                description: 'Friday, February 10, 2023 at 5:57 PM',
+                description: 'try again later',
             })
+            return
         }
         const session = await signInAccount({
             email: values.email,
             password: values.password,
         })
         if (!session) {
-            return toast({ title: 'sign in failed please try agian later' })
+            return toast({ title: 'sign in failed please try again later' })
+        }
+        const isLoggedIn = await checkAuthUser()
+        if (isLoggedIn) {
+            form.reset()
+            navigate('/')
+        } else {
+            return toast({ title: 'sign in failed please try again later' })
         }
     }
     return (
