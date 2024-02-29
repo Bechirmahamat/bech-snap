@@ -31,7 +31,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const checkAuthUser = async () => {
         try {
             const currentAccount = await getCurrentUser()
-
             if (currentAccount) {
                 setUser({
                     id: currentAccount.$id,
@@ -53,15 +52,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
     useEffect(() => {
-        if (
-            localStorage.getItem('cookieFallBack') === '[]' ||
-            localStorage.getItem('cookieFallBack') === null
-        ) {
+        const hasSession = JSON.parse(
+            localStorage.getItem('cookieFallback') || 'false'
+        )
+        console.log(hasSession)
+
+        if (!hasSession || hasSession === null || hasSession === undefined) {
             navigate('/login')
         }
 
         checkAuthUser()
     }, [])
+
     const values = {
         user,
         setUser,
