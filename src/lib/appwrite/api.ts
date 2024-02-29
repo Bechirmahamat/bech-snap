@@ -59,9 +59,15 @@ export async function signInAccount(user: { email: string; password: string }) {
     try {
         const email = user.email
         const password = user.password
-
         const session = await account.createEmailSession(email, password)
-
+        return session
+    } catch (error) {
+        console.log(error)
+    }
+}
+export const signOutAccount = async () => {
+    try {
+        const session = await account.deleteSession('current')
         return session
     } catch (error) {
         console.log(error)

@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
+/* .active {
+    background: rgb(135 126 255);
+    border-radius: 8px;
+}
+.active img {
+    
+} */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -277,4 +283,10 @@
     .shad-button_ghost {
         @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
     }
+}
+.active {
+    @apply bg-primary-500 rounded-lg;
+}
+.active img {
+    @apply invert-white;
 }
