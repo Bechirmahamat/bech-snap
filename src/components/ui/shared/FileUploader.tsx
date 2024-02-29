@@ -13,6 +13,8 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUpLoaderProps) => {
             setFile(acceptedFiles)
             fieldChange(acceptedFiles)
             setFileUrl(URL.createObjectURL(acceptedFiles[0]))
+            console.log(acceptedFiles)
+            console.log(URL.createObjectURL(acceptedFiles[0]))
         },
         [file]
     )
@@ -29,7 +31,19 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUpLoaderProps) => {
         >
             <input {...getInputProps()} className='cursor-pointer ' />
             {fileUrl ? (
-                <div>test 1</div>
+                <>
+                    <div className='flex flex-1 justify-center w-full p-5 lg:p-10'>
+                        <img
+                            src={fileUrl}
+                            alt='image'
+                            height={120}
+                            className='file_uploader-img'
+                        />
+                    </div>
+                    <p className='file_uploader-label'>
+                        Click or drag a photo to replace it
+                    </p>
+                </>
             ) : (
                 <div className='file_updloader-box'>
                     <img
