@@ -1,6 +1,7 @@
 import { INewPost, INewUser } from '@/types'
 import { account, appwriteConfig, avatars, databases, storage } from './config'
 import { ID, Query } from 'appwrite'
+import { error } from 'console'
 
 export const createUserAccount = async (user: INewUser) => {
     try {
@@ -177,4 +178,16 @@ export const uploadFile = async (file: File) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+// get Recent post
+
+export const getRecentPosts = async () => {
+    const posts = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        [Query.orderDesc('$createdAt'), Query.limit(20)]
+    )
+    if (!posts) throw Error
+    return posts
 }
