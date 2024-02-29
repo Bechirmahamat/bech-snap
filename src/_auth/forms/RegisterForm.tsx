@@ -43,27 +43,35 @@ const RegisterForm = () => {
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof RegisterValidation>) {
-        const newUser = await createUserAccount(values)
-        if (!newUser) {
-            toast({
-                title: 'Sign up failed. Please try again.',
-                description: 'try again later',
+        try {
+            const newUser = await createUserAccount(values)
+            if (!newUser) {
+                toast({
+                    title: 'Sign up failed. Please try again.',
+                    description: 'try again later',
+                })
+                return
+            }
+            // console.log(newUser)
+
+            const session = await signInAccount({
+                email: values.email,
+                password: values.password,
             })
-            return
-        }
-        const session = await signInAccount({
-            email: values.email,
-            password: values.password,
-        })
-        if (!session) {
-            return toast({ title: 'sign in failed please try again later' })
-        }
-        const isLoggedIn = await checkAuthUser()
-        if (isLoggedIn) {
-            form.reset()
-            navigate('/')
-        } else {
-            return toast({ title: 'sign in failed please try again later' })
+            if (!session) {
+                toast({ title: 'sign in went wrong' })
+                navigate('/register')
+                return
+            }
+            const isLoggedIn = await checkAuthUser()
+            if (isLoggedIn) {
+                form.reset()
+                navigate('/')
+            } else {
+                return toast({ title: 'login failed please try again later' })
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
     return (

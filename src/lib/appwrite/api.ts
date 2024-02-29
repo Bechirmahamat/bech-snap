@@ -10,6 +10,7 @@ export const createUserAccount = async (user: INewUser) => {
             user.password,
             user.name
         )
+
         if (!newAccount) throw Error
         const avatarUrl = avatars.getInitials(user.name)
 
@@ -20,6 +21,7 @@ export const createUserAccount = async (user: INewUser) => {
             username: user.username,
             imageUrl: avatarUrl,
         })
+
         return newUser
     } catch (error) {
         console.log(error)
@@ -27,22 +29,27 @@ export const createUserAccount = async (user: INewUser) => {
     }
 }
 
-export async function saveUserToDB(user: {
+export const saveUserToDB = async (user: {
     accountId: string
     email: string
     name: string
     imageUrl: URL
     username?: string
-}) {
+}) => {
     try {
-        const newUser = await databases.createDocument(
-            appwriteConfig.databaseId,
-            appwriteConfig.userCollectionId,
-            ID.unique(),
+        //
+        console.log('here')
+        const databaseId = appwriteConfig.databaseId
+        const collectionId = appwriteConfig.userCollectionId
+        const documentId = ID.unique()
+        const newUsers = await databases.createDocument(
+            databaseId,
+            collectionId,
+            documentId,
             user
         )
 
-        return newUser
+        return newUsers
     } catch (error) {
         console.log(error)
     }
@@ -50,11 +57,22 @@ export async function saveUserToDB(user: {
 
 export async function signInAccount(user: { email: string; password: string }) {
     try {
-        const session = await account.createEmailSession(
-            user.email,
-            user.password
-        )
+        const email = user.email
+        const password = user.password
+
+        const session = await account.createEmailSession(email, password)
+
         return session
+    } catch (error) {
+        console.log(error)
+    }
+}
+export async function getAccount() {
+    try {
+        console.log('get ')
+        const currentAccount = await account.get()
+
+        return currentAccount
     } catch (error) {
         console.log(error)
     }
@@ -62,18 +80,21 @@ export async function signInAccount(user: { email: string; password: string }) {
 
 export const getCurrentUser = async () => {
     try {
-        const currentAccount = await account.get()
+        const databaseId = appwriteConfig.databaseId
+        const collectionId = appwriteConfig.userCollectionId
 
-        if (!currentAccount) throw Error
+        const account = await getAccount()
+
+        if (!account) throw Error
         const currentUser = await databases.listDocuments(
-            appwriteConfig.databaseId,
-            appwriteConfig.userCollectionId,
-            [Query.equal('accountId', currentAccount.$id)]
+            databaseId,
+            collectionId,
+            [Query.equal('accountId', account.$id)]
         )
         if (!currentUser) throw Error
+
         return currentUser.documents[0]
     } catch (error) {
         console.log(error)
-        return null
     }
 }
