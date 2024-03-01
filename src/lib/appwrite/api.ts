@@ -191,3 +191,59 @@ export const getRecentPosts = async () => {
     if (!posts) throw Error
     return posts
 }
+
+// get the like post
+
+export const likedPost = async (postId: string, likesArray: string[]) => {
+    try {
+        // console.log(postId)
+
+        const updatedPost = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            postId,
+            {
+                likes: likesArray,
+            }
+        )
+        if (!updatedPost) throw Error
+        return updatedPost
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// save a post i mean user when he want to save a post
+
+export const savePost = async (postId: string, userId: string) => {
+    try {
+        const savingPost = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.saveCollectionId,
+            ID.unique(),
+            {
+                user: userId,
+                post: postId,
+            }
+        )
+        if (!savingPost) throw Error
+        return savingPost
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+//delete saved post
+export const deleteSavePost = async (saveRecordId: string) => {
+    try {
+        const statusCode = await databases.deleteDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.saveCollectionId,
+            saveRecordId
+        )
+        if (!statusCode) throw Error
+        return { status: 'ok' }
+    } catch (error) {
+        console.log(error)
+    }
+}
