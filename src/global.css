@@ -256,7 +256,7 @@
     /* SHADCN COMPONENTS */
     /* Form */
     .shad-form_label {
-        @apply text-white !important;
+        @apply text-white  !important;
     }
 
     .shad-form_message {
@@ -264,7 +264,7 @@
     }
 
     .shad-input {
-        @apply h-8 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+        @apply h-10 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
     }
 
     .shad-textarea {

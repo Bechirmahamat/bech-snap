@@ -72,6 +72,7 @@ export const signOutAccount = async () => {
         return session
     } catch (error) {
         console.log(error)
+        return null
     }
 }
 export async function getAccount() {
@@ -80,7 +81,8 @@ export async function getAccount() {
 
         return currentAccount
     } catch (error) {
-        console.log(error)
+        // console.log(error)
+        return null
     }
 }
 
@@ -243,6 +245,19 @@ export const deleteSavePost = async (saveRecordId: string) => {
         )
         if (!statusCode) throw Error
         return { status: 'ok' }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getPostById = async (postId: string) => {
+    try {
+        const getPost = await databases.getDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            postId
+        )
+        return getPost
     } catch (error) {
         console.log(error)
     }

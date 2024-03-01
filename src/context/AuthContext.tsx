@@ -52,12 +52,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
     useEffect(() => {
-        const hasSession = JSON.parse(
-            localStorage.getItem('cookieFallback') || 'false'
-        )
+        const hasSession = localStorage.getItem('cookieFallback')
+
         // console.log(hasSession)
 
-        if (!hasSession || hasSession === null || hasSession === undefined) {
+        if (hasSession === '[]' || hasSession === null) {
             navigate('/login')
         }
         checkAuthUser()

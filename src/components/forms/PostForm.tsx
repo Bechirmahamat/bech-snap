@@ -22,9 +22,10 @@ import { useNavigate } from 'react-router-dom'
 
 type PostFormProps = {
     post?: Models.Document
+    action: 'Create' | 'Update'
 }
 
-const PostForm = ({ post }: PostFormProps) => {
+const PostForm = ({ post, action }: PostFormProps) => {
     const { toast } = useToast()
     const { mutateAsync: createPost, isPending: isLoadingCreate } =
         useCreatePost()
@@ -53,7 +54,7 @@ const PostForm = ({ post }: PostFormProps) => {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className='flex flex-col max-w-3xl w-full'
+                className='flex gap-4 flex-col max-w-3xl w-full'
             >
                 <FormField
                     control={form.control}
@@ -134,13 +135,16 @@ const PostForm = ({ post }: PostFormProps) => {
                         </FormItem>
                     )}
                 />
-                <div className='flex gap-4 items-center justify-end'>
-                    <Button type='button' className='shad-button_dark_4'>
+                <div className='flex gap-4 mt-4 items-center justify-end'>
+                    <Button
+                        type='button'
+                        className='whitespace-nowrap  bg-orange-700 hover:bg-orange-800'
+                    >
                         Cancel
                     </Button>
                     <Button
                         type='submit'
-                        className='shad-button_primary whitespace-nowrap'
+                        className=' whitespace-nowrap bg-primary-500 hover:bg-primary-600'
                     >
                         Submit
                     </Button>
