@@ -17,8 +17,12 @@ import { PostValidation } from '@/lib/validation'
 import { Models } from 'appwrite'
 import { useUserContext } from '@/context/AuthContext'
 import { useToast } from '../ui/use-toast'
-import { useCreatePost } from '@/lib/react-query/queriesAndMutation'
+import {
+    useCreatePost,
+    useUpdatePost,
+} from '@/lib/react-query/queriesAndMutation'
 import { useNavigate } from 'react-router-dom'
+import Loader from '../ui/shared/loader'
 
 type PostFormProps = {
     post?: Models.Document
@@ -29,6 +33,8 @@ const PostForm = ({ post, action }: PostFormProps) => {
     const { toast } = useToast()
     const { mutateAsync: createPost, isPending: isLoadingCreate } =
         useCreatePost()
+    const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
+        useUpdatePost()
     const { user } = useUserContext()
     const navigate = useNavigate()
     // 1. Define your form.
@@ -43,6 +49,19 @@ const PostForm = ({ post, action }: PostFormProps) => {
     })
     // handle onSubmit
     async function onSubmit(values: z.infer<typeof PostValidation>) {
+        if (post && action === 'Update') {
+            const update = await updatePost({
+                ...values,
+                postId: post.$id,
+                imageId: post?.imageId,
+                imageUrl: post?.imageUrl,
+            })
+
+            if (!update) {
+                toast({ title: 'Please Try Again ' })
+            }
+            return navigate(`/posts/${post.$id}`)
+        }
         const newPost = await createPost({ ...values, userId: user.id })
         if (!newPost) {
             toast({ title: 'something went wrong' })
@@ -145,8 +164,18 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     <Button
                         type='submit'
                         className=' whitespace-nowrap bg-primary-500 hover:bg-primary-600'
+                        disabled={isLoadingCreate || isLoadingUpdate}
                     >
-                        Submit
+                        {isLoadingCreate || isLoadingUpdate ? (
+                            <>
+                                <Loader />
+                                <span>loading...</span>
+                            </>
+                        ) : action === 'Update' ? (
+                            'Update'
+                        ) : (
+                            'Create'
+                        )}
                     </Button>
                 </div>
             </form>
