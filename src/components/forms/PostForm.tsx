@@ -158,6 +158,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     <Button
                         type='button'
                         className='whitespace-nowrap  bg-orange-700 hover:bg-orange-800'
+                        disabled={isLoadingCreate || isLoadingUpdate}
                     >
                         Cancel
                     </Button>

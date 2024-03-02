@@ -155,7 +155,7 @@ export const useUpdatePost = () => {
             })
         },
     })
-}
+} 
 export const useDeletePost = () => {
     const queryClient = useQueryClient()
     return useMutation({

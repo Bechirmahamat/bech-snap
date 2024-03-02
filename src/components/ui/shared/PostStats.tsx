@@ -11,7 +11,7 @@ import { Loader } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type PostStatsProps = {
-    post: Models.Document
+    post?: Models.Document
     userId: string
 }
 const PostStats = ({ post, userId }: PostStatsProps) => {
@@ -21,13 +21,13 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         useDeleteSavePost()
     const { data: currentUser } = useGetCurrentUser()
     const savePostRecord = currentUser?.save.find(
-        (record: Models.Document) => record.post.$id === post.$id
+        (record: Models.Document) => record.post.$id === post?.$id
     )
 
     useEffect(() => {
         setIsSaved(!!savePostRecord)
     }, [currentUser])
-    const likesList = post.likes.map((user: Models.Document) => user.$id)
+    const likesList = post?.likes.map((user: Models.Document) => user.$id)
 
     const [likes, setLikes] = useState(likesList)
     const [isSaved, setIsSaved] = useState(false)
@@ -43,7 +43,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
             newLikes.push(userId)
         }
         setLikes(newLikes)
-        likedPost({ postId: post.$id, likesArray: newLikes })
+        likedPost({ postId: post?.$id || '', likesArray: newLikes })
     }
     const handleSavePost = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -53,7 +53,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
             deleteSavedPost(savePostRecord.$id)
         } else {
             setIsSaved(true)
-            savePost({ postId: post.$id, userId })
+            savePost({ postId: post?.$id || '', userId })
         }
     }
 
@@ -63,8 +63,8 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
                 <img
                     src={
                         checkIsLiked(likes, userId)
-                            ? 'assets/icons/liked.svg'
-                            : 'assets/icons/like.svg'
+                            ? '/assets/icons/liked.svg'
+                            : '/assets/icons/like.svg'
                     }
                     alt='like'
                     width={20}
@@ -82,8 +82,8 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
                     <img
                         src={
                             isSaved
-                                ? 'assets/icons/saved.svg'
-                                : 'assets/icons/save.svg'
+                                ? '/assets/icons/saved.svg'
+                                : '/assets/icons/save.svg'
                         }
                         alt='like'
                         width={20}

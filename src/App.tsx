@@ -52,7 +52,7 @@ import { Toaster } from './components/ui/toaster'
 // ])
 function App() {
     return (
-        <main className='flex min-h-screen max-w-6xl mx-auto'>
+        <main className='flex min-h-screen'>
             <Routes>
                 {/* private */}
                 <Route element={<RootLayout />}>
